@@ -11,6 +11,11 @@ const generateId = () => {
 module.exports = {
 
   insert: newGame => {
+    const foundIndex = gameStore.findIndex(g => g.title === newGame.title);
+    if(foundIndex > -1) {
+      return Promise.reject(new Error('Title is not unique'));
+    }
+
     newGame.id = generateId();
     gameStore.push(newGame);
     return Promise.resolve(newGame);

@@ -40,7 +40,7 @@ describe('POST /games', () => {
       body: { id: firstId }
     } = await request(server)
       .post('/games')
-      .send(newGame);
+      .send({...newGame, title: 'Unique Title'});
 
     const {
       body: { id: secondId }
@@ -49,6 +49,18 @@ describe('POST /games', () => {
       .send(newGame);
 
     expect(firstId).toBe(secondId - 1);
+  });
+
+  it('should enforce title uniqueness', async () => {
+    await request(server)
+      .post('/games')
+      .send(newGame);
+
+    const response = await request(server)
+      .post('/games')
+      .send(newGame);
+
+    expect(response.status).toBe(405);
   });
 });
 

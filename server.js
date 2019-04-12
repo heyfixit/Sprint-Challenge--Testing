@@ -14,6 +14,10 @@ server.post('/games', async ({ body: newGame }, res) => {
     const createdGame = await Games.insert(newGame);
     return res.status(201).json(createdGame);
   } catch (err) {
+    if(err.message === 'Title is not unique') {
+      return res.status(405).json({ error: err.message })
+    }
+
     return res.status(500).json({ error: err });
   }
 });
