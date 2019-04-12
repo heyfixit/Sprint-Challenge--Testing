@@ -18,4 +18,9 @@ server.post('/games', async ({ body: newGame }, res) => {
   }
 });
 
+server.get('/games', async (req, res) => {
+  const games = await Games.get();
+  return res.status(200).json(games);
+});
+
 module.exports = server;
