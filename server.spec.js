@@ -9,6 +9,8 @@ const newGame = {
 };
 
 describe('POST /games', () => {
+  beforeEach(Games.truncate);
+
   it('should respond with 422 if information is incomplete', async () => {
     const response = await request(server)
       .post('/games')
@@ -30,7 +32,23 @@ describe('POST /games', () => {
       .post('/games')
       .send(newGame);
 
-    expect(response.body).toEqual(newGame);
+    expect(response.body).toEqual({ ...newGame, id: 1 });
+  });
+
+  it('should assign and increment the id field', async () => {
+    const {
+      body: { id: firstId }
+    } = await request(server)
+      .post('/games')
+      .send(newGame);
+
+    const {
+      body: { id: secondId }
+    } = await request(server)
+      .post('/games')
+      .send(newGame);
+
+    expect(firstId).toBe(secondId - 1);
   });
 });
 
